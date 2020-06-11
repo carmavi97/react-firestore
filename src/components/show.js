@@ -6,26 +6,50 @@ class Show extends Component {
 
   constructor(props) {
     super(props);
+    
     this.state = {
       board: {},
-      key: ''
+      key: '',
     };
   }
 
   componentDidMount() {
     const ref = firebase.firestore().collection('boards').doc(this.props.match.params.id);
+
     ref.get().then((doc) => {
       if (doc.exists) {
+        
         this.setState({
+          
           board: doc.data(),
           key: doc.id,
           isLoading: false
         });
+        
       } else {
         console.log("No such document!");
       }
     });
   }
+
+  onCollectionUpdate = (querySnapshot) => {
+    const comments = [];
+    querySnapshot.forEach((doc) => {
+      const { text, postID, author } = doc.data();
+      comments.push({
+        key: doc.id,
+        doc, // DocumentSnapshot
+        text,
+        author,
+        postID,
+      });
+    });
+    this.setState({
+      comments
+   });
+  }
+
+
 
   delete(id){
     firebase.firestore().collection('boards').doc(id).delete().then(() => {
@@ -37,6 +61,9 @@ class Show extends Component {
   }
 
   render() {
+
+
+    
     return (
       <div class="container">
         <div class="panel panel-default">
@@ -52,10 +79,19 @@ class Show extends Component {
               <dd>{this.state.board.description}</dd>
               <dt>Author:</dt>
               <dd>{this.state.board.author}</dd>
+              <dt>Imagen</dt>
+              <dd><img src={this.state.board.img}></img></dd>
             </dl>
             <Link to={`/edit/${this.state.key}`} class="btn btn-success">Edit</Link>&nbsp;
             <button onClick={this.delete.bind(this, this.state.key)} class="btn btn-danger">Delete</button>
           </div>
+        </div>
+        <div class="panel panel-default">
+          <h4>Comments List</h4>
+          
+        </div>
+        <div class="panel panel-default">
+          <h4>Write a comment</h4>
         </div>
       </div>
     );
