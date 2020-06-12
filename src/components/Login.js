@@ -35,10 +35,12 @@ const Login = ({ history }) => {
           Email
           <input name="email" type="email" placeholder="Email" />
         </label>
+        <br/>
         <label>
           Password
           <input name="password" type="password" placeholder="Password" />
         </label>
+        <br/>
         <button type="submit">Log in</button>
       </form>
       <div>

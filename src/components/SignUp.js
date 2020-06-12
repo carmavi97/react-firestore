@@ -25,16 +25,19 @@ const SignUp = ({ history }) => {
       <form onSubmit={handleSignUp}>
       <label>
           User Name
-          <input name="userName"  placeholder="UserName" />
+          <input name="userName"  placeholder="UserName" required/>
         </label>
+        <br/>
         <label>
           Email
           <input name="email" type="email" placeholder="Email" />
         </label>
+        <br/>
         <label>
           Password
           <input name="password" type="password" placeholder="Password" />
         </label>
+        <br/>
         <button type="submit">Sign Up</button>
       </form>
     </div>

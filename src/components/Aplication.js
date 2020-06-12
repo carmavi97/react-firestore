@@ -9,7 +9,8 @@ class App extends Component {
     this.ref = firebase.firestore().collection('boards');
     this.unsubscribe = null;
     this.state = {
-      boards: []
+      boards: [],
+      user:firebase.auth().currentUser
     };
   }
 
@@ -41,6 +42,7 @@ class App extends Component {
     console.log(firebase.auth().currentUser.photoURL)
     return (
       <div class="container">
+        <p>Signed as {this.state.user.displayName}</p>
          <button onClick={() => app.auth().signOut()}>Sign out</button>
         <div class="panel panel-default">
           <div class="panel-heading">
