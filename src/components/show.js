@@ -63,7 +63,6 @@ class Show extends Component {
   render() {
 
 
-    
     return (
       <div class="container">
         <div class="panel panel-default">

@@ -28,7 +28,7 @@ const Login = ({ history }) => {
   }
 
   return (
-    <div>
+    <div class="container">
       <h1>Log in</h1>
       <form onSubmit={handleLogin}>
         <label>

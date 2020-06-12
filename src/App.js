@@ -16,11 +16,11 @@ const App= () => {
     <Router>
         <div>
           <PrivateRoute exact path="/" component={Application} />
+          <PrivateRoute exact path="/create" component={create}/>
+          <PrivateRoute exact path="/edit" component={edit}/>
+          <PrivateRoute exact path="/user" component={User}/>
           <Route exact path="/login" component={Login} /> 
           <Route exact path="/signup" component={SignUp}/>
-          <Route exact path="/create" component={create}/>
-          <Route exact path="/edit" component={edit}/>
-          <Route exact path="/user" component={User}/>
         </div>
     </Router>
   </AuthProvider>

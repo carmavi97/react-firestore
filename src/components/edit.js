@@ -40,19 +40,6 @@ class Edit extends Component {
     state[e.target.name] = e.target.value;
     this.setState({board:state});
 
-    var user = firebase.auth().currentUser;
-
-if (user != null) {
-  user.providerData.forEach(function (profile) {
-    console.log("Sign-in provider: " + profile.providerId);
-    console.log("  Provider-specific UID: " + profile.uid);
-    console.log("  Name: " + profile.displayName);
-    console.log("  Email: " + profile.email);
-    console.log("  Photo URL: " + profile.photoURL);
-  });
-}else{
-  console.log("Va mal")
-}
   }
 
   onImgChange= (e)=>{
@@ -127,7 +114,7 @@ if (user != null) {
               </div>
               <div class="form-group">
                 <label for="author">Author:</label>
-                <input type="text" class="form-control" name="author" value={this.state.author} onChange={this.onChange} placeholder="Author" />
+                <input type="text" class="form-control" name="author" value={this.state.author} onChange={this.onChange} placeholder="Author" readonly/>
               </div>
               <div>
                 <label for="image">Imagen:</label>

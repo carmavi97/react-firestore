@@ -12,7 +12,7 @@ class Comment extends Component {
       key: '',
       text: '',
       postID: '',
-      author: '',
+      author: firebase.auth().currentUser.displayName,
     };
     
 

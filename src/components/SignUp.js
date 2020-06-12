@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
 import { withRouter } from "react-router";
 import app from "../Firebase";
+import { Link } from 'react-router-dom';
 
 const SignUp = ({ history }) => {
   const handleSignUp = useCallback(async event => {
@@ -20,7 +21,7 @@ const SignUp = ({ history }) => {
   }, [history]);
 
   return (
-    <div>
+    <div class="container">
       <h1>Sign up</h1>
       <form onSubmit={handleSignUp}>
       <label>
@@ -40,6 +41,11 @@ const SignUp = ({ history }) => {
         <br/>
         <button type="submit">Sign Up</button>
       </form>
+      <div>
+          <label>
+            <Link to={`Login`}>Login</Link>
+          </label>
+      </div>
     </div>
   );
 };

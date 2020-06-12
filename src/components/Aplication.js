@@ -43,13 +43,12 @@ class App extends Component {
     return (
       <div class="container">
         <p>Signed as {this.state.user.displayName}</p>
-         <button onClick={() => app.auth().signOut()}>Sign out</button>
+        <h4><Link to="/user">My Profile</Link></h4>
         <div class="panel panel-default">
           <div class="panel-heading">
             <h3 class="panel-title">
               BOARD LIST
             </h3>
-            <h4><Link to="/user">Profile</Link></h4>
           </div>
           <div class="panel-body">
             <h4><Link to="/create">Add Board</Link></h4>
