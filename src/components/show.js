@@ -86,13 +86,6 @@ class Show extends Component {
             <button onClick={this.delete.bind(this, this.state.key)} class="btn btn-danger">Delete</button>
           </div>
         </div>
-        <div class="panel panel-default">
-          <h4>Comments List</h4>
-          
-        </div>
-        <div class="panel panel-default">
-          <h4>Write a comment</h4>
-        </div>
       </div>
     );
   }

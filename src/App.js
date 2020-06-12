@@ -8,7 +8,6 @@ import PrivateRoute from "./PrivateRoute";
 import create from './components/create';
 import edit from './components/edit';
 import User from "./components/user";
-import changeUser from "./components/changeUser";
 
 
 const App= () => {
@@ -22,7 +21,6 @@ const App= () => {
           <Route exact path="/create" component={create}/>
           <Route exact path="/edit" component={edit}/>
           <Route exact path="/user" component={User}/>
-          <Route exact path="/changeUser" component={changeUser}/>
         </div>
     </Router>
   </AuthProvider>
