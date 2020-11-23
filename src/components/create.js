@@ -11,15 +11,18 @@ class Create extends Component {
   constructor() {
     super();
     this.ref = firebase.firestore().collection('boards');
-    this.allImputs={imgUrl: ''}
+    this.ref_img = firebase.firestore().collection('images');;
+    this.allImputs={imgUrl: ''};
     var user=firebase.auth().currentUser;
+    
     if(user.displayName){
       this.state = {
         title: '',
         description: '',
         author: user.displayName,
         img:'',
-        comments:{}
+        comments:{},
+        images:[]
       };
     }else{
       this.state = {
@@ -27,7 +30,8 @@ class Create extends Component {
         description: '',
         author: user.email,
         img:'',
-        comments:{}
+        comments:{},
+        images:[]
       };
     }
   }
@@ -37,23 +41,27 @@ class Create extends Component {
     state[e.target.name] = e.target.value;
     this.setState(state);
 
-    
   }
 
+  //
   onImgChange= (e)=>{
     var file = this.refs.file.files[0];
     var reader = new FileReader();
     var url = reader.readAsDataURL(file);
-
-   reader.onloadend = function (e) {
+    const imgs =this.state.images;
+    reader.onloadend = function (e) {
       
       console.log(reader.result)
       const imageToBase64 = require('image-to-base64');
       imageToBase64(reader.result) // you can also to use url
     .then(
-        this.setState({ img:[reader.result]})
-        
-    )
+      imgs.push(reader.result)
+      //this.setState({ img:[reader.result]}) 
+    ).then((done)=>{
+      this.setState({
+        images:imgs
+      })
+    })
     .catch(
         (error) => {
             console.log(error); //Exepection error....
@@ -62,26 +70,45 @@ class Create extends Component {
     }.bind(this);
   }
 
-  onSubmit = (e) => {
+   onSubmit = (e) => {
     e.preventDefault();
 
     const { title, description, author,img ,comments} = this.state;
-
+    const images=this.state.images;
+    this.ref_img.add({
+      img,
+      date_time: new Date().toLocaleString()
+    });
     this.ref.add({
       title,
       description,
       author,
-      img,
-      comments
+      comments,
+      date_time: new Date().toLocaleString()
+      
     }).then((docRef) => {
-      this.setState({
-        title: '',
-        description: '',
-        author: '',
-        img:'',
-        comments:{}
+      const ref_2 = firebase.firestore().collection('boards').orderBy('date_time').limitToLast(1).get().then(function (snapshot){
+        
+        if (snapshot.docs[0].exists) {
+            const boardId = snapshot.docs[0].id;
+            images.forEach((image)=>{
+              firebase.firestore().collection('boards').doc(boardId).collection('images').add({image});
+              console.log(image);
+            })
+          //firebase.firestore().collection('boards').doc(boardId).collection('images').add({img});
+        }else{
+          console.log("No such document!");
+        }
+      }).then((done) =>{
+        this.setState({
+          title: '',
+          description: '',
+          author: '',
+          img:'',
+          comments:{}
+        });
+        this.props.history.push("/")
       });
-      this.props.history.push("/")
     })
     .catch((error) => {
       console.error("Error adding document: ", error);
@@ -92,7 +119,7 @@ class Create extends Component {
     const { title, description, author, imgurl, comments } = this.state;
     var user=firebase.auth().currentUser;
     const preAuthor=user.displayName;
-
+    const images=this.state.images;
     return (
       <div class="container">
         <div class="panel panel-default">
@@ -127,7 +154,20 @@ class Create extends Component {
                     onChange={this.onImgChange}/>
 
               </div>
-              <img src={this.state.img} />
+              <table class="table table-stripe">
+              <thead>
+                <tr>
+                  <th>Images</th>
+                </tr>
+              </thead>
+              <tbody>
+                {images.map(img =>
+                  <tr>
+                    <td><img src={img}></img></td>
+                  </tr>
+                )}
+              </tbody>
+            </table> 
               <br/>
               <button type="submit" class="btn btn-success">Submit</button>
             </form>

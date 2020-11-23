@@ -13,7 +13,7 @@ import User from "./components/user";
 const App= () => {
   return (
   <AuthProvider>
-    <Router>
+    <Router>  
         <div>
           <PrivateRoute exact path="/" component={Application} />
           <PrivateRoute exact path="/create" component={create}/>

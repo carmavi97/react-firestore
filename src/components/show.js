@@ -9,47 +9,79 @@ class Show extends Component {
     
     this.state = {
       board: {},
+      images: [],
       key: '',
+      comments:[],
+      newComment:''
     };
   }
 
-  componentDidMount() {
+   componentDidMount() {
+    const imgs=[];
+    const comments=[];
     const ref = firebase.firestore().collection('boards').doc(this.props.match.params.id);
-
     ref.get().then((doc) => {
       if (doc.exists) {
-        
-        this.setState({
-          
-          board: doc.data(),
-          key: doc.id,
-          isLoading: false
+        const ref_img = firebase.firestore().collection('boards').doc(doc.id).collection('images').get().then(function (snapshot){
+          snapshot.forEach((image)=>{
+            const img=image.data();
+            imgs.push(img.image);
+          })
+        }).then((done)=>{
+          const ref_comments = firebase.firestore().collection('boards').doc(doc.id).collection('comments').get().then(function (snapshot_comments){
+            snapshot_comments.forEach((comment)=>{
+              const comm=comment.data();
+              comments.push(comm);
+            })
+          }).then((done)=>{
+            this.setState({
+              board: doc.data(),
+              key: doc.id,
+              isLoading: false,
+              images: imgs,
+              comments:comments
+            });
+          })
         });
         
       } else {
         console.log("No such document!");
       }
     });
+    //const imagenes=this.state.images;
+    
   }
 
-  onCollectionUpdate = (querySnapshot) => {
-    const comments = [];
-    querySnapshot.forEach((doc) => {
-      const { text, postID, author } = doc.data();
-      comments.push({
-        key: doc.id,
-        doc, // DocumentSnapshot
-        text,
-        author,
-        postID,
+  onSubmit = (e) => {
+    e.preventDefault();
+
+    const comment = this.state.newComment;
+    var user=firebase.auth().currentUser;
+    const ref = firebase.firestore().collection('boards').doc(this.props.match.params.id).collection('comments');
+    
+    firebase.firestore().collection('boards').doc(this.props.match.params.id).collection('comments').add({
+      comment,
+      author:user.displayName,
+      date_time: new Date().toLocaleString()
+      
+    }).then((docRef) => {
+      this.setState({
+        newComment:''
       });
+      this.props.history.push("/show/"+this.props.match.params.id)
+    })
+    .catch((error) => {
+      console.error("Error adding comment: ", error);
     });
-    this.setState({
-      comments
-   });
+    
   }
 
-
+  onChange = (e) => {
+    const state = this.state
+    state[e.target.name] = e.target.value;
+    this.setState(state);
+    
+  }
 
   delete(id){
     firebase.firestore().collection('boards').doc(id).delete().then(() => {
@@ -62,7 +94,8 @@ class Show extends Component {
 
   render() {
 
-
+    const imagenes=this.state.images;
+    const comments=this.state.comments;
     return (
       <div class="container">
         <div class="panel panel-default">
@@ -78,11 +111,47 @@ class Show extends Component {
               <dd>{this.state.board.description}</dd>
               <dt>Author:</dt>
               <dd>{this.state.board.author}</dd>
-              <dt>Imagen</dt>
-              <dd><img src={this.state.board.img}></img></dd>
             </dl>
+            <table class="table table-stripe">
+              <thead>
+                <tr>
+                  <th>Images</th>
+                </tr>
+              </thead>
+              <tbody>
+                {imagenes.map(img =>
+                  <tr>
+                    <td><img src={img}></img></td>
+                  </tr>
+                )}
+              </tbody>
+            </table>  
             <Link to={`/edit/${this.state.key}`} class="btn btn-success">Edit</Link>&nbsp;
             <button onClick={this.delete.bind(this, this.state.key)} class="btn btn-danger">Delete</button>
+            <div class="panel-coments">
+              <form onSubmit={this.onSubmit}>
+              <div class="form-group">
+              <table class="table table-stripe">
+                <thead>
+                  <tr>
+                    <th>Comments</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {comments.map(comment =>
+                    <tr>
+                      <td>{comment.author}:{comment.comment} at {comment.date_time}</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+                <label for="title">Writte a comment!</label>
+                <input type="text" class="form-control" name="newComment"  onChange={this.onChange} placeholder="Your Comment " />
+                <br/>
+                <button type="submit" class="btn btn-success">Submit</button>
+              </div>
+              </form>
+            </div>
           </div>
         </div>
       </div>

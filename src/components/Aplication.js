@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import firebase from '../Firebase';
-import { app } from 'firebase';
+import { app, firestore } from 'firebase';
 
 class App extends Component {
   constructor(props) {
@@ -13,33 +13,40 @@ class App extends Component {
       user:firebase.auth().currentUser
     };
   }
-
+  //se encarga de mantener la coleccion de la aplicacion en linea con la de firebase si hay actualizaciones
   onCollectionUpdate = (querySnapshot) => {
     const boards = [];
     querySnapshot.forEach((doc) => {
-      const { title, description, author, img } = doc.data();
-      boards.push({
-        key: doc.id,
-        doc, // DocumentSnapshot
-        title,
-        description,
-        author,
-        img,
-      });
+      const { title, description, author } = doc.data();
+      const ref_img = firebase.firestore().collection('boards').doc(doc.id).collection('images').get().then(function (snapshot){
+          snapshot.forEach((image)=>{
+            const {img}=image.data();
+            console.log(img);
+            boards.push({
+              key: doc.id,
+              doc, // DocumentSnapshot
+              title,
+              description,
+              author,
+              img
+            });
+          })
+      }).then((done)=>{
+        this.setState({
+          boards
+       });
+       console.log(this.state.boards);
+      })
     });
-    this.setState({
-      boards
-   });
   }
 
+  
   componentDidMount() {
     this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate);
-    
-
   }
 
   render() {
-    console.log(firebase.auth().currentUser.photoURL)
+
     return (
       <div class="container">
         <p>Signed as {this.state.user.displayName}</p>
@@ -59,7 +66,7 @@ class App extends Component {
                   <th>Description</th>
                   <th>Author</th>
                   <th>Imagen</th>
-                </tr>
+            </tr>
               </thead>
               <tbody>
                 {this.state.boards.map(board =>
