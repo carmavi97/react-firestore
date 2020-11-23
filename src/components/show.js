@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import firebase from '../Firebase';
 import { Link } from 'react-router-dom';
-
+import Comment from '../components/Comment'
+import Galery from './Galery';
 class Show extends Component {
 
   constructor(props) {
@@ -112,45 +113,11 @@ class Show extends Component {
               <dt>Author:</dt>
               <dd>{this.state.board.author}</dd>
             </dl>
-            <table class="table table-stripe">
-              <thead>
-                <tr>
-                  <th>Images</th>
-                </tr>
-              </thead>
-              <tbody>
-                {imagenes.map(img =>
-                  <tr>
-                    <td><img src={img}></img></td>
-                  </tr>
-                )}
-              </tbody>
-            </table>  
+            <Galery dataFromParent = {this.props.match.params.id}/>
             <Link to={`/edit/${this.state.key}`} class="btn btn-success">Edit</Link>&nbsp;
             <button onClick={this.delete.bind(this, this.state.key)} class="btn btn-danger">Delete</button>
             <div class="panel-coments">
-              <form onSubmit={this.onSubmit}>
-              <div class="form-group">
-              <table class="table table-stripe">
-                <thead>
-                  <tr>
-                    <th>Comments</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {comments.map(comment =>
-                    <tr>
-                      <td>{comment.author}:{comment.comment} at {comment.date_time}</td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-                <label for="title">Writte a comment!</label>
-                <input type="text" class="form-control" name="newComment"  onChange={this.onChange} placeholder="Your Comment " />
-                <br/>
-                <button type="submit" class="btn btn-success">Submit</button>
-              </div>
-              </form>
+              <Comment dataFromParent = {this.props.match.params.id}/>
             </div>
           </div>
         </div>
