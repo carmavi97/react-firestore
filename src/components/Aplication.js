@@ -6,7 +6,7 @@ import { app, firestore } from 'firebase';
 class App extends Component {
   constructor(props) {
     super(props);
-    this.ref = firebase.firestore().collection('boards');
+    this.ref = firebase.firestore().collection('boards').orderBy('date_time',"desc");
     this.unsubscribe = null;
     this.state = {
       boards: [],
@@ -17,30 +17,41 @@ class App extends Component {
   onCollectionUpdate = (querySnapshot) => {
     const boards = [];
     querySnapshot.forEach((doc) => {
-      const { title, description, author } = doc.data();
-      const ref_img = firebase.firestore().collection('boards').doc(doc.id).collection('images').get().then(function (snapshot){
-          snapshot.forEach((image)=>{
-            const {img}=image.data();
-            console.log(img);
-            boards.push({
-              key: doc.id,
-              doc, // DocumentSnapshot
-              title,
-              description,
-              author,
-              img
-            });
-          })
-      }).then((done)=>{
-        this.setState({
-          boards
-       });
-       console.log(this.state.boards);
+      const { title, description, author,date_time } = doc.data();
+          boards.push({
+          key: doc.id,
+          doc, // DocumentSnapshot
+          title,
+          description,
+          author,
+          date_time
+        })
+      this.setState({
+        boards
       })
     });
   }
 
-  
+  showColonia(){
+    const boards=[];
+    firebase.firestore().collection('boards').where("author","==","cormovo").get().then((snapshot)=>{
+      snapshot.forEach((doc)=>{
+          const { title, description, author,date_time } = doc.data();
+          boards.push({
+          key: doc.id,
+          doc, // DocumentSnapshot
+          title,
+          description,
+          author,
+          date_time
+        })
+      this.setState({
+        boards
+      })
+      })
+   })
+  }
+
   componentDidMount() {
     this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate);
   }
@@ -58,6 +69,27 @@ class App extends Component {
             </h3>
           </div>
           <div class="panel-body">
+            <div id="filter">
+              <p>Filter Sections</p>
+            <button variant="contained" class="btn btn-success" onClick={this.showColonia()}>
+              Colonia
+            </button>
+            <button variant="contained" class="btn btn-success">
+              Manada
+            </button>
+
+            <button variant="contained" class="btn btn-success">
+              Tropa
+            </button>
+
+            <button variant="contained" class="btn btn-success">
+              Unidad
+            </button>
+
+            <button variant="contained" class="btn btn-success">
+              Clan
+            </button>
+            </div>
             <h4><Link to="/create">Add Board</Link></h4>
             <table class="table table-stripe">
               <thead>
@@ -65,8 +97,8 @@ class App extends Component {
                   <th>Title</th>
                   <th>Description</th>
                   <th>Author</th>
-                  <th>Imagen</th>
-            </tr>
+                  <th>Posted</th>
+                </tr>
               </thead>
               <tbody>
                 {this.state.boards.map(board =>
@@ -74,7 +106,7 @@ class App extends Component {
                     <td><Link to={`/show/${board.key}`}>{board.title}</Link></td>
                     <td>{board.description}</td>
                     <td>{board.author}</td>
-                    <td><img src={board.img}></img></td>
+                    <td>{board.date_time}</td>
                   </tr>
                 )}
               </tbody>
