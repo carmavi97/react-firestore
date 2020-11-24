@@ -6,12 +6,14 @@ import { app, firestore } from 'firebase';
 class App extends Component {
   constructor(props) {
     super(props);
-    this.ref = firebase.firestore().collection('boards').orderBy('date_time',"desc");
     this.unsubscribe = null;
     this.state = {
+      ref:firebase.firestore().collection('boards').orderBy("date_time"),
       boards: [],
+      filter: '*',
       user:firebase.auth().currentUser
     };
+    this.ref = firebase.firestore().collection('boards').orderBy("date_time");
   }
   //se encarga de mantener la coleccion de la aplicacion en linea con la de firebase si hay actualizaciones
   onCollectionUpdate = (querySnapshot) => {
@@ -32,11 +34,11 @@ class App extends Component {
     });
   }
 
-  showColonia(){
+  showColonia=(e=>{
     const boards=[];
-    firebase.firestore().collection('boards').where("author","==","cormovo").get().then((snapshot)=>{
-      snapshot.forEach((doc)=>{
-          const { title, description, author,date_time } = doc.data();
+    firebase.firestore().collection('boards').where('author','==','cormovo').orderBy("date_time").get().then((snapshot)=>{
+      snapshot.forEach((doc=>{
+        const { title, description, author,date_time } = doc.data();
           boards.push({
           key: doc.id,
           doc, // DocumentSnapshot
@@ -48,50 +50,90 @@ class App extends Component {
       this.setState({
         boards
       })
+      }))
+    });
+  })
+
+  showManada=(e=>{
+    const boards=[];
+    firebase.firestore().collection('boards').where('author','==','Carmavi').orderBy("date_time").get().then((snapshot)=>{
+      snapshot.forEach((doc=>{
+        const { title, description, author,date_time } = doc.data();
+          boards.push({
+          key: doc.id,
+          doc, // DocumentSnapshot
+          title,
+          description,
+          author,
+          date_time
+        })
+      this.setState({
+        boards
       })
-   })
-  }
+      }))
+    });
+  })
+
+  showAll=(e=>{
+    const boards=[];
+    firebase.firestore().collection('boards').orderBy("date_time").get().then((snapshot)=>{
+      snapshot.forEach((doc=>{
+        const { title, description, author,date_time } = doc.data();
+          boards.push({
+          key: doc.id,
+          doc, // DocumentSnapshot
+          title,
+          description,
+          author,
+          date_time
+        })
+      this.setState({
+        boards
+      })
+      }))
+    });
+  })
 
   componentDidMount() {
-    this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate);
+    this.unsubscribe = this.state.ref.onSnapshot(this.onCollectionUpdate);
   }
 
   render() {
 
     return (
-      <div class="container">
+      <div className="container">
         <p>Signed as {this.state.user.displayName}</p>
         <h4><Link to="/user">My Profile</Link></h4>
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h3 class="panel-title">
+        <div className="panel panel-default">
+          <div className="panel-heading">
+            <h3 className="panel-title">
               BOARD LIST
             </h3>
           </div>
-          <div class="panel-body">
+          <div className="panel-body">
             <div id="filter">
               <p>Filter Sections</p>
-            <button variant="contained" class="btn btn-success" onClick={this.showColonia()}>
+            <button variant="contained" className="btn btn-success" onClick={this.showColonia.bind()}>
               Colonia
             </button>
-            <button variant="contained" class="btn btn-success">
+            <button variant="contained" className="btn btn-success"onClick={this.showManada.bind()}>
               Manada
             </button>
-
-            <button variant="contained" class="btn btn-success">
+            <button variant="contained" className="btn btn-success">
               Tropa
             </button>
-
-            <button variant="contained" class="btn btn-success">
+            <button variant="contained" className="btn btn-success">
               Unidad
             </button>
-
-            <button variant="contained" class="btn btn-success">
+            <button variant="contained" className="btn btn-success">
               Clan
+            </button>
+            <button variant="contained" className="btn btn-success" onClick={this.showAll.bind()}>
+              All
             </button>
             </div>
             <h4><Link to="/create">Add Board</Link></h4>
-            <table class="table table-stripe">
+            <table className="table table-stripe">
               <thead>
                 <tr>
                   <th>Title</th>

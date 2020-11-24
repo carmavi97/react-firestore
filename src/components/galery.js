@@ -17,8 +17,8 @@ class Galery extends Component{
         const imgs=[];
         const ref_img = firebase.firestore().collection('boards').doc(this.props.dataFromParent).collection('images').get().then(function (snapshot){
             snapshot.forEach((image)=>{
-            const img=image.data();
-            imgs.push(img.image);
+                const img=image.data();
+                imgs.push(img.image);
             })
         }).then((done)=>{
             this.setState({
