@@ -2,6 +2,7 @@ import React, { useCallback } from "react";
 import { withRouter } from "react-router";
 import app from "../Firebase";
 import { Link } from 'react-router-dom';
+import firebase from '../Firebase';
 
 const SignUp = ({ history }) => {
   const handleSignUp = useCallback(async event => {
@@ -14,6 +15,18 @@ const SignUp = ({ history }) => {
       history.push("/");
       app.auth().currentUser.updateProfile({
         displayName: userName.value
+      }).then((register)=>{
+        firebase.firestore().collection('users').add({
+          email:email.value,
+          userName:userName.value,
+          admin:false,
+          Colonia:false,
+          Manada:false,
+          Tropa:false,
+          Unidad:false,
+          Clan:false
+          
+        })
       })
     } catch (error) {
       alert(error);

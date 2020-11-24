@@ -4,6 +4,7 @@ import firebase from '../Firebase';
 import { Link } from 'react-router-dom';
 import { AuthProvider } from './Auth';
 import { app } from 'firebase';
+import emailjs from 'emailjs-com';
 
 
 
@@ -12,8 +13,9 @@ class Create extends Component {
   constructor() {
     super();
     this.ref = firebase.firestore().collection('boards');
-    this.ref_img = firebase.firestore().collection('images');;
+    this.ref_img = firebase.firestore().collection('images');
     this.allImputs={imgUrl: ''};
+    this.handleSubmit = this.handleSubmit.bind(this);
     var user=firebase.auth().currentUser;
     
     if(user.displayName){
@@ -73,7 +75,7 @@ class Create extends Component {
 
    onSubmit = (e) => {
     e.preventDefault();
-
+    this.handleSubmit();
     const { title, description, author,img ,comments} = this.state;
     const images=this.state.images;
     this.ref_img.add({
@@ -96,7 +98,7 @@ class Create extends Component {
               firebase.firestore().collection('boards').doc(boardId).collection('images').add({image});
               console.log(image);
             })
-          //firebase.firestore().collection('boards').doc(boardId).collection('images').add({img});
+          
         }else{
           console.log("No such document!");
         }
@@ -115,6 +117,23 @@ class Create extends Component {
       console.error("Error adding document: ", error);
     });
   }
+
+  handleSubmit() {
+    const templateId = 'template_9n6pu2y';
+    var user=firebase.auth().currentUser;
+	this.sendFeedback(templateId, {message: this.state.description, nombre_seccion: this.state.author, reply_to: user.email, to_name: 'Carlos'})
+  }
+
+  sendFeedback (templateId, variables) {
+    emailjs.send(
+      'service_ptmyofq', templateId,
+      variables,'user_cCSJHAl6ZPAeJZ6RU89X3'
+      ).then(res => {
+        console.log('Email successfully sent!')
+      })
+      // Handle errors here however you like, or use a React error boundary
+      .catch(err => console.error('Oh well, you failed. Here some thoughts on the error that occured:', err))
+    }
 
   render() {
     const { title, description, author, imgurl, comments } = this.state;

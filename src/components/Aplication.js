@@ -8,12 +8,12 @@ class App extends Component {
     super(props);
     this.unsubscribe = null;
     this.state = {
-      ref:firebase.firestore().collection('boards').orderBy("date_time"),
+      ref:firebase.firestore().collection('boards').orderBy("date_time","desc"),
       boards: [],
       filter: '*',
       user:firebase.auth().currentUser
     };
-    this.ref = firebase.firestore().collection('boards').orderBy("date_time");
+    this.ref = firebase.firestore().collection('boards').orderBy("date_time","desc");
   }
   //se encarga de mantener la coleccion de la aplicacion en linea con la de firebase si hay actualizaciones
   onCollectionUpdate = (querySnapshot) => {
@@ -36,7 +36,7 @@ class App extends Component {
 
   showColonia=(e=>{
     const boards=[];
-    firebase.firestore().collection('boards').where('author','==','cormovo').orderBy("date_time").get().then((snapshot)=>{
+    firebase.firestore().collection('boards').where('author','==','Colonia').orderBy("date_time","desc").get().then((snapshot)=>{
       snapshot.forEach((doc=>{
         const { title, description, author,date_time } = doc.data();
           boards.push({
@@ -56,7 +56,67 @@ class App extends Component {
 
   showManada=(e=>{
     const boards=[];
-    firebase.firestore().collection('boards').where('author','==','Carmavi').orderBy("date_time").get().then((snapshot)=>{
+    firebase.firestore().collection('boards').where('author','==','Manada').orderBy("date_time","desc").get().then((snapshot)=>{
+      snapshot.forEach((doc=>{
+        const { title, description, author,date_time } = doc.data();
+          boards.push({
+          key: doc.id,
+          doc, // DocumentSnapshot
+          title,
+          description,
+          author,
+          date_time
+        })
+      this.setState({
+        boards
+      })
+      }))
+    });
+  })
+
+  showTropa=(e=>{
+    const boards=[];
+    firebase.firestore().collection('boards').where('author','==','Tropa').orderBy("date_time","desc").get().then((snapshot)=>{
+      snapshot.forEach((doc=>{
+        const { title, description, author,date_time } = doc.data();
+          boards.push({
+          key: doc.id,
+          doc, // DocumentSnapshot
+          title,
+          description,
+          author,
+          date_time
+        })
+      this.setState({
+        boards
+      })
+      }))
+    });
+  })
+
+  showUnidad=(e=>{
+    const boards=[];
+    firebase.firestore().collection('boards').where('author','==','Unidad').orderBy("date_time","desc").get().then((snapshot)=>{
+      snapshot.forEach((doc=>{
+        const { title, description, author,date_time } = doc.data();
+          boards.push({
+          key: doc.id,
+          doc, // DocumentSnapshot
+          title,
+          description,
+          author,
+          date_time
+        })
+      this.setState({
+        boards
+      })
+      }))
+    });
+  })
+
+  showClan=(e=>{
+    const boards=[];
+    firebase.firestore().collection('boards').where('author','==','Clan').orderBy("date_time","desc").get().then((snapshot)=>{
       snapshot.forEach((doc=>{
         const { title, description, author,date_time } = doc.data();
           boards.push({
@@ -76,7 +136,7 @@ class App extends Component {
 
   showAll=(e=>{
     const boards=[];
-    firebase.firestore().collection('boards').orderBy("date_time").get().then((snapshot)=>{
+    firebase.firestore().collection('boards').orderBy("date_time","desc").get().then((snapshot)=>{
       snapshot.forEach((doc=>{
         const { title, description, author,date_time } = doc.data();
           boards.push({
@@ -116,16 +176,16 @@ class App extends Component {
             <button variant="contained" className="btn btn-success" onClick={this.showColonia.bind()}>
               Colonia
             </button>
-            <button variant="contained" className="btn btn-success"onClick={this.showManada.bind()}>
+            <button variant="contained" className="btn btn-success" onClick={this.showManada.bind()}>
               Manada
             </button>
-            <button variant="contained" className="btn btn-success">
+            <button variant="contained" className="btn btn-success" onClick={this.showTropa.bind()}>
               Tropa
             </button>
-            <button variant="contained" className="btn btn-success">
+            <button variant="contained" className="btn btn-success" onClick={this.showUnidad.bind()}>
               Unidad
             </button>
-            <button variant="contained" className="btn btn-success">
+            <button variant="contained" className="btn btn-success" onClick={this.showClan.bind()}>
               Clan
             </button>
             <button variant="contained" className="btn btn-success" onClick={this.showAll.bind()}>

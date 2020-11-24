@@ -8,7 +8,7 @@ import PrivateRoute from "./PrivateRoute";
 import create from './components/create';
 import edit from './components/edit';
 import User from "./components/user";
-
+import Comment from "./components/Comment"
 
 const App= () => {
   return (
@@ -19,6 +19,7 @@ const App= () => {
           <PrivateRoute exact path="/create" component={create}/>
           <PrivateRoute exact path="/edit" component={edit}/>
           <PrivateRoute exact path="/user" component={User}/>
+          <PrivateRoute exact path="/comment" component={Comment}/>
           <Route exact path="/login" component={Login} /> 
           <Route exact path="/signup" component={SignUp}/>
         </div>
