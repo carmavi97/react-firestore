@@ -37,7 +37,6 @@ class Comment extends Component {
     
   }
 
-
   onSubmit = (e) => {
     e.preventDefault();
 
@@ -57,15 +56,13 @@ class Comment extends Component {
     })
     .catch((error) => {
       console.error("Error adding comment: ", error);
-    });
-    
+    });    
   }
 
   onChange = (e) => {
     const state = this.state
     state[e.target.name] = e.target.value;
     this.setState(state);
-    
   }
   
 

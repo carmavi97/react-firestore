@@ -96,7 +96,6 @@ class Create extends Component {
             const boardId = snapshot.docs[0].id;
             images.forEach((image)=>{
               firebase.firestore().collection('boards').doc(boardId).collection('images').add({image});
-              console.log(image);
             })
           
         }else{
@@ -119,9 +118,33 @@ class Create extends Component {
   }
 
   handleSubmit() {
-    const templateId = 'template_9n6pu2y';
+    const templateId = 'template_jdhc679';
+    const firebaseUser = firebase.auth().currentUser
     var user=firebase.auth().currentUser;
-	this.sendFeedback(templateId, {message: this.state.description, nombre_seccion: this.state.author, reply_to: user.email, to_name: 'Carlos'})
+    firebase.firestore().collection('users').get().then((snapshot)=>{
+      snapshot.forEach((doc)=>{
+        const user=doc.data();
+        
+        if(user.userName!='Colonia'&&user.userName!='Manada'&&user.userName!='Tropa'&&user.userName!='Unidad'&&user.userName!='Clan'){
+          if(user.Colonia==true&&firebaseUser.displayName=='Colonia'){
+            this.sendFeedback(templateId, {message: this.state.description,nombre_actividad: this.state.title, nombre_seccion: this.state.author, reply_to: this.state.author+'@MFK500.es', to_name: user.userName,user_email: user.email})
+          }
+          if(user.Manada==true&&firebaseUser.displayName=='Manada'){
+            this.sendFeedback(templateId, {message: this.state.description,nombre_actividad: this.state.title, nombre_seccion: this.state.author, reply_to: this.state.author+'@MFK500.es', to_name: user.userName,user_email: user.email})
+          }
+          if(user.Tropa==true&&firebaseUser.displayName=='Tropa'){
+            this.sendFeedback(templateId, {message: this.state.description,nombre_actividad: this.state.title, nombre_seccion: this.state.author, reply_to: this.state.author+'@MFK500.es', to_name: user.userName,user_email: user.email})
+          }
+          if(user.Unidad==true&&firebaseUser.displayName=='Unidad'){
+            this.sendFeedback(templateId, {message: this.state.description,nombre_actividad: this.state.title, nombre_seccion: this.state.author, reply_to: this.state.author+'@MFK500.es', to_name: user.userName,user_email: user.email})
+          }
+          if(user.Clan==true&&firebaseUser.displayName=='Clan'){
+            this.sendFeedback(templateId, {message: this.state.description,nombre_actividad: this.state.title, nombre_seccion: this.state.author, reply_to: this.state.author+'@MFK500.es', to_name: user.userName,user_email: user.email})
+          }
+        }
+      })
+    })
+	  
   }
 
   sendFeedback (templateId, variables) {
