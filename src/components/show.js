@@ -13,13 +13,15 @@ class Show extends Component {
       images: [],
       key: '',
       comments:[],
-      newComment:''
+      newComment:'',
+      user:firebase.auth().currentUser
     };
   }
 
    componentDidMount() {
     const imgs=[];
     const comments=[];
+    
     const ref = firebase.firestore().collection('boards').doc(this.props.match.params.id);
     ref.get().then((doc) => {
       if (doc.exists) {
@@ -57,7 +59,7 @@ class Show extends Component {
     e.preventDefault();
 
     const comment = this.state.newComment;
-    var user=firebase.auth().currentUser;
+    var user=firebase.auth().currentUser.displayName;
     const ref = firebase.firestore().collection('boards').doc(this.props.match.params.id).collection('comments');
     
     firebase.firestore().collection('boards').doc(this.props.match.params.id).collection('comments').add({
@@ -93,6 +95,48 @@ class Show extends Component {
     });
   }
 
+  follow= (e)=>{
+    const userID='';
+    const author=this.state.board.author;
+    const currentUser=firebase.auth().currentUser;
+    if(author=='Colonia'){
+      firebase.firestore().collection('users').where("userName","==",currentUser).then((snapshot)=>{
+        snapshot.forEach(doc=>{
+          userID=doc.id;
+          firebase.firestore().collection('users').doc(userID).set({Colonia: true})
+        })
+      })
+    }if(this.state.board.author=='Manada'){
+      firebase.firestore().collection('users').where("userName","==",firebase.auth().currentUser).then((snapshot)=>{
+        snapshot.forEach(doc=>{
+          userID=doc.id;
+          firebase.firestore().collection('users').doc(userID).set({Manada: true})
+        })
+      })
+    }if(this.state.board.author=='Tropa'){
+      firebase.firestore().collection('users').where("userName","==",firebase.auth().currentUser).then((snapshot)=>{
+        snapshot.forEach(doc=>{
+          userID=doc.id;
+          firebase.firestore().collection('users').doc(userID).set({Tropa: true})
+        })
+      })
+    }if(this.state.board.author=='Unidad'){
+      firebase.firestore().collection('users').where("userName","==",firebase.auth().currentUser).then((snapshot)=>{
+        snapshot.forEach(doc=>{
+          userID=doc.id;
+          firebase.firestore().collection('users').doc(userID).set({Unidad: true})
+        })
+      })
+    }if(this.state.board.author=='Clan'){
+      firebase.firestore().collection('users').where("userName","==",firebase.auth().currentUser).then((snapshot)=>{
+        snapshot.forEach(doc=>{
+          userID=doc.id;
+          firebase.firestore().collection('users').doc(userID).set({Clan: true})
+        })
+      })
+    }
+  }
+
   render() {
 
     const imagenes=this.state.images;
@@ -112,6 +156,7 @@ class Show extends Component {
               <dd>{this.state.board.description}</dd>
               <dt>Author:</dt>
               <dd>{this.state.board.author}</dd>
+              <button onClick={this.follow.bind()} class="btn btn-danger">Follow</button>
             </dl>
             <Galery dataFromParent = {this.props.match.params.id}/>
             <Link to={`/edit/${this.state.key}`} class="btn btn-success">Edit</Link>&nbsp;
