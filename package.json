@@ -11,6 +11,8 @@
     "@testing-library/user-event": "^7.2.1",
     "emailjs-com": "^2.6.4",
     "firebase": "^7.14.5",
+    "google-map-react": "^2.1.9",
+    "google-maps-react": "^2.0.6",
     "image-to-base64": "^2.1.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

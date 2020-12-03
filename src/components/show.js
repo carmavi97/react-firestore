@@ -3,6 +3,7 @@ import firebase from '../Firebase';
 import { Link } from 'react-router-dom';
 import Comment from '../components/Comment'
 import Galery from './Galery';
+import Maps from './Maps';
 class Show extends Component {
 
   constructor(props) {
@@ -10,79 +11,41 @@ class Show extends Component {
     
     this.state = {
       board: {},
-      images: [],
       key: '',
-      comments:[],
       newComment:'',
-      user:firebase.auth().currentUser
+      user:firebase.auth().currentUser,
+      admin:false
     };
   }
 
    componentDidMount() {
-    const imgs=[];
-    const comments=[];
     
     const ref = firebase.firestore().collection('boards').doc(this.props.match.params.id);
     ref.get().then((doc) => {
       if (doc.exists) {
-        const ref_img = firebase.firestore().collection('boards').doc(doc.id).collection('images').get().then(function (snapshot){
-          snapshot.forEach((image)=>{
-            const img=image.data();
-            imgs.push(img.image);
-          })
-        }).then((done)=>{
-          const ref_comments = firebase.firestore().collection('boards').doc(doc.id).collection('comments').get().then(function (snapshot_comments){
-            snapshot_comments.forEach((comment)=>{
-              const comm=comment.data();
-              comments.push(comm);
-            })
-          }).then((done)=>{
-            this.setState({
-              board: doc.data(),
-              key: doc.id,
-              isLoading: false,
-              images: imgs,
-              comments:comments
-            });
-          })
+        var currentUser=firebase.auth().currentUser;
+        this.setState({
+          board: doc.data(),
+          key: doc.id,
+          isLoading: false,
+          user: currentUser
         });
         
       } else {
         console.log("No such document!");
       }
-    });
-    //const imagenes=this.state.images;
-    
-  }
-
-  onSubmit = (e) => {
-    e.preventDefault();
-
-    const comment = this.state.newComment;
-    var user=firebase.auth().currentUser.displayName;
-    const ref = firebase.firestore().collection('boards').doc(this.props.match.params.id).collection('comments');
-    
-    firebase.firestore().collection('boards').doc(this.props.match.params.id).collection('comments').add({
-      comment,
-      author:user.displayName,
-      date_time: new Date().toLocaleString()
-      
-    }).then((docRef) => {
-      this.setState({
-        newComment:''
-      });
-      this.props.history.push("/show/"+this.props.match.params.id)
+    }).then(()=>{
+      const uName=this.state.user.displayName
+      firebase.firestore().collection('users').where('userName','==',uName).get().then((snapshot)=>{
+        snapshot.forEach((user)=>{
+          const {admin}=user.data()
+          
+          this.setState({admin});
+          
+        })
+      })
     })
-    .catch((error) => {
-      console.error("Error adding comment: ", error);
-    });
-    
-  }
-
-  onChange = (e) => {
-    const state = this.state
-    state[e.target.name] = e.target.value;
-    this.setState(state);
+    //const imagenes=this.state.images;
     
   }
 
@@ -138,9 +101,13 @@ class Show extends Component {
   }
 
   render() {
+    let bEdit=<br/>;
+    let bDelete=<br/>;
+    if(this.state.admin){
+      bEdit=<Link to={`/edit/${this.state.key}`} class="btn btn-success">Edit</Link>
+      bDelete=<button onClick={this.delete.bind(this, this.state.key)} class="btn btn-danger">Delete</button>
+    }
 
-    const imagenes=this.state.images;
-    const comments=this.state.comments;
     return (
       <div class="container">
         <div class="panel panel-default">
@@ -156,11 +123,14 @@ class Show extends Component {
               <dd>{this.state.board.description}</dd>
               <dt>Author:</dt>
               <dd>{this.state.board.author}</dd>
-              <button onClick={this.follow.bind()} class="btn btn-danger">Follow</button>
             </dl>
             <Galery dataFromParent = {this.props.match.params.id}/>
-            <Link to={`/edit/${this.state.key}`} class="btn btn-success">Edit</Link>&nbsp;
-            <button onClick={this.delete.bind(this, this.state.key)} class="btn btn-danger">Delete</button>
+            <div id="mapas">
+
+            </div>
+            {bDelete}
+            
+            {bEdit}
             <div class="panel-coments">
               <Comment dataFromParent = {this.props.match.params.id}/>
             </div>

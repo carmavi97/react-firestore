@@ -11,13 +11,21 @@ class App extends Component {
       ref:firebase.firestore().collection('boards').orderBy("date_time","desc"),
       boards: [],
       filter: '*',
-      user:firebase.auth().currentUser
+      user:firebase.auth().currentUser,
+      admin:false
     };
     this.ref = firebase.firestore().collection('boards').orderBy("date_time","desc");
   }
   //se encarga de mantener la coleccion de la aplicacion en linea con la de firebase si hay actualizaciones
   onCollectionUpdate = (querySnapshot) => {
     const boards = [];
+    const uName=this.state.user.displayName
+      firebase.firestore().collection('users').where('userName','==',uName).get().then((snapshot)=>{
+        snapshot.forEach((user)=>{
+          const {admin}=user.data()
+          this.setState({admin:admin});
+        })
+      })
     querySnapshot.forEach((doc) => {
       const { title, description, author,date_time } = doc.data();
           boards.push({
@@ -28,10 +36,11 @@ class App extends Component {
           author,
           date_time
         })
-      this.setState({
+        this.setState({
         boards
       })
-    });
+    })
+      
   }
 
   showColonia=(e=>{
@@ -155,14 +164,21 @@ class App extends Component {
   })
 
   componentDidMount() {
-    this.unsubscribe = this.state.ref.onSnapshot(this.onCollectionUpdate);
+    this.unsubscribe = this.state.ref.onSnapshot(this.onCollectionUpdate)
   }
 
   render() {
+    let add=<br/>;
+    if(this.state.admin){
+      add=<Link to="/create">Add Board</Link>
+      console.log(this.state.admin)
+    }
+    
 
     return (
       <div className="container">
         <p>Signed as {this.state.user.displayName}</p>
+        <Link to='/map'>mapa</Link>
         <h4><Link to="/user">My Profile</Link></h4>
         <div className="panel panel-default">
           <div className="panel-heading">
@@ -192,7 +208,7 @@ class App extends Component {
               All
             </button>
             </div>
-            <h4><Link to="/create">Add Board</Link></h4>
+            <h4>{add}</h4>
             <table className="table table-stripe">
               <thead>
                 <tr>

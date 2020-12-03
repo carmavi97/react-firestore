@@ -10,6 +10,7 @@ import edit from './components/edit';
 import User from "./components/user";
 import Comment from "./components/Comment"
 import Show from "./components/show";
+import Maps from "./components/Maps";
 
 const App= () => {
   return (
@@ -22,6 +23,7 @@ const App= () => {
           <PrivateRoute exact path="/user" component={User}/>
           <PrivateRoute exact path="/comment" component={Comment}/>
           <PrivateRoute exact path="/Show" component={Show}/>
+          <PrivateRoute exact path="/map" component={Maps} />
           <Route exact path="/login" component={Login} /> 
           <Route exact path="/signup" component={SignUp}/>
         </div>
