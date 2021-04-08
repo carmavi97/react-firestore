@@ -1,41 +1,20 @@
 import React, { Component } from 'react';
-import { Map, GoogleApiWrapper } from 'google-maps-react';
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { Icon } from "leaflet";
+import "../App.css";
 
- 
-const mapStyles = {
-  width: '100%',
-  height: '100%'
-};
 class Maps extends Component {
-  static defaultProps = {
-    center: {
-      lat: 59.95,
-      lng: 30.33
-    },
-    zoom: 11
-  };
- 
-  componentDidMount(){
-    console.log('cargado')
-  }
 
-  render() {
-    return (
-      <Map
-        google={this.props.google}
-        zoom={14}
-        style={mapStyles}
-        initialCenter={
-          {
-            lat: 0,
-            lng: 0
-          }
-        }
+reder(){
+  console.log('mapa')
+  return (
+    <MapContainer center={[45.4, -75.7]} zoom={12}>
+      <TileLayer
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
       />
-    );
-  }
+    </MapContainer>
+  );}
+
 }
- 
-export default GoogleApiWrapper({
-  apiKey: 'AIzaSyDlOnkJYal4PHonEXutGm6UmDZluz_Wj80'
-})(Map);
+export default Maps;

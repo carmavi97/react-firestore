@@ -54,7 +54,6 @@ class Create extends Component {
     const imgs =this.state.images;
     reader.onloadend = function (e) {
       
-      console.log(reader.result)
       const imageToBase64 = require('image-to-base64');
       imageToBase64(reader.result) // you can also to use url
     .then(
@@ -159,10 +158,10 @@ class Create extends Component {
     }
 
   render() {
-    const { title, description, author, imgurl, comments } = this.state;
+    const { title, description, author, images, comments } = this.state;
     var user=firebase.auth().currentUser;
     const preAuthor=user.displayName;
-    const images=this.state.images;
+    
     return (
       <div class="container">
         <div class="panel panel-default">

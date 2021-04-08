@@ -11,11 +11,12 @@
     "@testing-library/user-event": "^7.2.1",
     "emailjs-com": "^2.6.4",
     "firebase": "^7.14.5",
-    "google-map-react": "^2.1.9",
     "google-maps-react": "^2.0.6",
     "image-to-base64": "^2.1.0",
+    "leaflet": "^1.7.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-leaflet": "^3.0.2",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
     "react-with-firebase-auth": "^1.3.2"
