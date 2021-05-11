@@ -12,7 +12,9 @@ class Galery extends Component{
         };
 
     }
-
+/**
+ * Se ejecuta cuando se ha cargado el componente, carga las imagenes del post en concreto que se esta viendo en el estatus para que se muestren
+ */
     componentDidMount() {
         const imgs=[];
         const ref_img = firebase.firestore().collection('boards').doc(this.props.dataFromParent).collection('images').get().then(function (snapshot){

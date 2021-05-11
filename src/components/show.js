@@ -17,7 +17,10 @@ class Show extends Component {
       admin:false
     };
   }
-
+/**
+ * Este metodo se ejecuta al cargarse con exito el componente y descarga la informacion del post en cuestion que se desea leer gracias a su id
+ * y la almacena en el estado del componente
+ */
    componentDidMount() {
     
     const ref = firebase.firestore().collection('boards').doc(this.props.match.params.id);
@@ -45,10 +48,13 @@ class Show extends Component {
         })
       })
     })
-    //const imagenes=this.state.images;
     
   }
-
+/**
+ * 
+ * @param {*} id La ID del post que se esta leyendo
+ * Este metodo borra el post de la coleccion y vuelve a la ventana principal de la aplicación
+ */
   delete(id){
     firebase.firestore().collection('boards').doc(id).delete().then(() => {
       console.log("Document successfully deleted!");
@@ -57,7 +63,7 @@ class Show extends Component {
       console.error("Error removing document: ", error);
     });
   }
-
+/*
   follow= (e)=>{
     const userID='';
     const author=this.state.board.author;
@@ -99,7 +105,12 @@ class Show extends Component {
       })
     }
   }
-
+*/
+/**
+ * 
+ * @returns El Html que se carga en pantalla
+ * Este metodo carga el html, ademas de comprobar si el usuario actual es administrador para permitirle actualizar o borrar el post
+ */
   render() {
     let bEdit=<br/>;
     let bDelete=<br/>;

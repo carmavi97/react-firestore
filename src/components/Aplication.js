@@ -16,7 +16,11 @@ class App extends Component {
     };
     this.ref = firebase.firestore().collection('boards').orderBy("date_time","desc");
   }
-  //se encarga de mantener la coleccion de la aplicacion en linea con la de firebase si hay actualizaciones
+  /**
+   * 
+   * Se encarga de mantener la coleccion de la aplicacion en linea con la de firebase si hay actualizaciones, extrayendo la coleccinón
+   * y guardandola en el estado
+   */
   onCollectionUpdate = (querySnapshot) => {
     const boards = [];
     const uName=this.state.user.displayName
@@ -42,7 +46,9 @@ class App extends Component {
     })
       
   }
-
+ /**
+  * Filtra los post para que solo se muestre aquellos que han sido escritos por Colonia
+  */
   showColonia=(e=>{
     const boards=[];
     firebase.firestore().collection('boards').where('author','==','Colonia').orderBy("date_time","desc").get().then((snapshot)=>{
@@ -63,6 +69,9 @@ class App extends Component {
     });
   })
 
+  /**
+  * Filtra los post para que solo se muestre aquellos que han sido escritos por Manada
+  */
   showManada=(e=>{
     const boards=[];
     firebase.firestore().collection('boards').where('author','==','Manada').orderBy("date_time","desc").get().then((snapshot)=>{
@@ -83,6 +92,9 @@ class App extends Component {
     });
   })
 
+  /**
+  * Filtra los post para que solo se muestre aquellos que han sido escritos por Tropa
+  */
   showTropa=(e=>{
     const boards=[];
     firebase.firestore().collection('boards').where('author','==','Tropa').orderBy("date_time","desc").get().then((snapshot)=>{
@@ -103,6 +115,9 @@ class App extends Component {
     });
   })
 
+  /**
+  * Filtra los post para que solo se muestre aquellos que han sido escritos por Unidad
+  */
   showUnidad=(e=>{
     const boards=[];
     firebase.firestore().collection('boards').where('author','==','Unidad').orderBy("date_time","desc").get().then((snapshot)=>{
@@ -123,6 +138,9 @@ class App extends Component {
     });
   })
 
+  /**
+  * Filtra los post para que solo se muestre aquellos que han sido escritos por Clan
+  */
   showClan=(e=>{
     const boards=[];
     firebase.firestore().collection('boards').where('author','==','Clan').orderBy("date_time","desc").get().then((snapshot)=>{
@@ -142,7 +160,9 @@ class App extends Component {
       }))
     });
   })
-
+/**
+  * Deja de filtrar los post segun su autor y vuelve a mostrar todos
+  */
   showAll=(e=>{
     const boards=[];
     firebase.firestore().collection('boards').orderBy("date_time","desc").get().then((snapshot)=>{
@@ -166,7 +186,9 @@ class App extends Component {
   componentDidMount() {
     this.unsubscribe = this.state.ref.onSnapshot(this.onCollectionUpdate)
   }
-
+/**
+  * Muestra el Html, ademas de colocar en él un boton que permite crear nuevos post en funcion de si el usuario es o no administrador
+  */
   render() {
     let add=<br/>;
     if(this.state.admin){

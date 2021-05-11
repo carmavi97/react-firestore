@@ -11,30 +11,50 @@ class Edit extends Component {
       title: '',
       description: '',
       author: '',
-      img:''
+      img:'',
+      images:[]
     };
     
 
   }
-
+/**
+ * Este metodo se ejecuta una vez se ha cargado el componente y guarda los datos del post a editar en el estatus para que sean mostrados
+ */
   componentDidMount() {
     const ref = firebase.firestore().collection('boards').doc(this.props.match.params.id);
     ref.get().then((doc) => {
       if (doc.exists) {
         const board = doc.data();
+        const imgs=[];
+        const ref_img = firebase.firestore().collection('boards').doc(this.props.match.params.id).collection('images').get().then(function (snapshot){
+          snapshot.forEach((image)=>{
+              const img=image.data();
+              imgs.push(img.image);
+              
+          })
+      }).then((done)=>{
+          this.setState({
+              isLoading: false,
+              images: imgs,
+              key: doc.id,
+              title: board.title,
+              description: board.description,
+              author: board.author
+          })
+      });
         this.setState({
-          key: doc.id,
-          title: board.title,
-          description: board.description,
-          author: board.author,
-          img: board.img
+          
         });
       } else {
         console.log("No such document!");
       }
     });
   }
-
+/**
+ * 
+ * @param {*} e :El text area que ha sido actualizado
+ * Actualiza el estado del componente con el contenido del text area
+ */
   onChange = (e) => {
     const state = this.state
     state[e.target.name] = e.target.value;
@@ -43,15 +63,22 @@ class Edit extends Component {
   }
 
   onImgChange= (e)=>{
+    var file = this.refs.file.files[0];
     var reader = new FileReader();
-    
-   reader.onloadend = function (e) {
+    var url = reader.readAsDataURL(file);
+    const imgs =this.state.images;
+    reader.onloadend = function (e) {
+      
       const imageToBase64 = require('image-to-base64');
       imageToBase64(reader.result) // you can also to use url
     .then(
-        this.setState({ img:[reader.result]})
-        
-    )
+      imgs.push(reader.result)
+      //this.setState({ img:[reader.result]}) 
+    ).then((done)=>{
+      this.setState({
+        images:imgs
+      })
+    })
     .catch(
         (error) => {
             console.log(error); //Exepection error....
@@ -63,27 +90,32 @@ class Edit extends Component {
   imgDelete= (e)=>{
     this.setState({ img:''})
   }
-
+/**
+ * 
+ * @param {*} e Es el formulario con la informacion del post actualizada que se desea guardar
+ * Este metodo actualiza el post guardado en firebase con los datos nuevos 
+ */
   onSubmit = (e) => {
     e.preventDefault();
 
     const { title, description, author, img } = this.state;
-
+    const images=this.state.images;
     const updateRef = firebase.firestore().collection('boards').doc(this.state.key);
+    
     updateRef.set({
       title,
       description,
       author,
-      img
-    }).then((docRef) => {
-      this.setState({
-        key: '',
-        title: '',
-        description: '',
-        author: '',
-        img:''
-      });
-      this.props.history.push("/show/"+this.props.match.params.id)
+      date_time: new Date().toLocaleString()
+    }).then((done) =>{
+        this.setState({
+          title: '',
+          description: '',
+          author: '',
+          img:'',
+          comments:{}
+        });
+        this.props.history.push("/")
     })
     .catch((error) => {
       console.error("Error adding document: ", error);
@@ -93,6 +125,7 @@ class Edit extends Component {
   
 
   render() {
+    const imagenes=this.state.images;
     return (
       <div class="container">
         <div class="panel panel-default">
@@ -116,21 +149,23 @@ class Edit extends Component {
                 <label for="author">Author:</label>
                 <input type="text" class="form-control" name="author" value={this.state.author} onChange={this.onChange} placeholder="Author" readonly/>
               </div>
-              <div>
-                <label for="image">Imagen:</label>
-                <input 
-                    ref="file" 
-                    class="form-control"
-                    type="file" 
-                    name="user[image]" 
-                    multiple="true"
-                    onChange={this.onImgChange}/>
-              </div>
-              <img src={this.state.img} />
+              <table class="table table-stripe">
+              <thead>
+                <tr>
+                  <th>Images</th>
+                </tr>
+              </thead>
+              <tbody>
+                {imagenes.map(img =>
+                  <tr>
+                    <td><img src={img}></img></td>
+                  </tr>
+                )}
+              </tbody>
+            </table> 
               <button class="btn btn-danger" onClick={this.imgDelete}>Delete Image</button>
               <br/>
               <br/>
-              
               <button type="submit" class="btn btn-success" >Submit</button>
             </form>
           </div>

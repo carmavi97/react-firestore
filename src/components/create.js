@@ -13,7 +13,6 @@ class Create extends Component {
   constructor() {
     super();
     this.ref = firebase.firestore().collection('boards');
-    this.ref_img = firebase.firestore().collection('images');
     this.allImputs={imgUrl: ''};
     this.handleSubmit = this.handleSubmit.bind(this);
     var user=firebase.auth().currentUser;
@@ -38,7 +37,11 @@ class Create extends Component {
       };
     }
   }
-
+/**
+ * 
+ * @param {*} e :El text area que ha sido actualizado
+ * Actualiza el estado del componente con el contenido del text area
+ */
   onChange = (e) => {
     const state = this.state
     state[e.target.name] = e.target.value;
@@ -46,7 +49,12 @@ class Create extends Component {
 
   }
 
-  //
+  /**
+   * 
+   * @param {*} e : El input de la imagen seleccionada
+   * Se crea un File reader para leer los dados de la imagen seleccionada en el input, una vez se ha optenido la imagen se para a base64 
+   * y es añadida en el array del estatus del componente
+   */
   onImgChange= (e)=>{
     var file = this.refs.file.files[0];
     var reader = new FileReader();
@@ -71,16 +79,17 @@ class Create extends Component {
     )
     }.bind(this);
   }
-
+/**
+ * 
+ * @param {*} e : Es el formulario del nuevo post que se desea crear
+ * Se almacena la informacion de el estado en constantes y se crea un post nuevo en firebase, tras esto extrae dicho post aciendo un select del
+ * post con la fecha y hora mas reciente para conseguir su ID y asi poder hace el insert de las imagenes que se desean para ese post
+ */
    onSubmit = (e) => {
     e.preventDefault();
     this.handleSubmit();
     const { title, description, author,img ,comments} = this.state;
     const images=this.state.images;
-    this.ref_img.add({
-      img,
-      date_time: new Date().toLocaleString()
-    });
     this.ref.add({
       title,
       description,
@@ -115,7 +124,11 @@ class Create extends Component {
       console.error("Error adding document: ", error);
     });
   }
-
+/**
+ * Este metodo se ejecuta al crea un post nuevo, buscara en cada usuario regristrado si esta subscrito, lo que se refleja
+ * con un booleano en los datos del usuario, a la sección que ha creado dicho post para enviarle un correro con la informacion del post
+ * usando el metodo sendFeedback
+ */
   handleSubmit() {
     const templateId = 'template_jdhc679';
     const firebaseUser = firebase.auth().currentUser
@@ -145,7 +158,12 @@ class Create extends Component {
     })
 	  
   }
-
+/**
+ * 
+ * @param {string} templateId Es la id de la plantilla que se desea utilizar con el servicio de EmailJS
+ * @param {JSON} variables Es un JSON que contiene el nombre de cada variable a sustuir en la plantilla y el valor de la misma
+ * Este metodo utiliza el servicio de EmailJS para enviar un correo con la informacion del post a cada usuario registrado
+ */
   sendFeedback (templateId, variables) {
     emailjs.send(
       'service_ptmyofq', templateId,
