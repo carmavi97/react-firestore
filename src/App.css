@@ -1,12 +1,49 @@
 .App {
   text-align: center;
+  background-color: purple;
+}
+body{
+  background-color: purple;
+}
+.create{
+  background-color: #a900a9;
 }
 
+.create a{
+  color:white
+}
+
+.header a{
+  color: white;
+}
+
+.header a:hover{
+  text-decoration: none;
+}
+
+table.table-stripe{
+  background-color: white;
+}
 .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
+.navbar {
+  width: 100%;
+  overflow: auto;
+}
+.nav-item {
+  float: left;
+  padding: 12px;
+  text-decoration: none;
+  font-size: 17px;
+  width: 100%; 
+  text-align: center; 
+}
 
+.nav-item:hover {
+  background-color: #a900a9;
+}
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -14,7 +51,7 @@
 }
 
 .leaflet-container {
-  width: 100%;
+  width: 100vw;
   height: 100vh;
 }
 

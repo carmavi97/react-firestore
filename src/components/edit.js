@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import firebase from '../Firebase';
 import { Link } from 'react-router-dom';
+import Header from './Header';
 
 class Edit extends Component {
 
@@ -128,6 +129,7 @@ class Edit extends Component {
     const imagenes=this.state.images;
     return (
       <div class="container">
+        <Header/>
         <div class="panel panel-default">
           <div class="panel-heading">
             <h3 class="panel-title">
@@ -149,7 +151,7 @@ class Edit extends Component {
                 <label for="author">Author:</label>
                 <input type="text" class="form-control" name="author" value={this.state.author} onChange={this.onChange} placeholder="Author" readonly/>
               </div>
-              <table class="table table-stripe">
+              <table class="table ">
               <thead>
                 <tr>
                   <th>Images</th>

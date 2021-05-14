@@ -1,7 +1,7 @@
 import React, { Component, useReducer}  from 'react';
 import firebase from '../Firebase';
 import { Link } from 'react-router-dom';
-
+import Header from './Header';
 
 class User extends Component {
     constructor(props) {
@@ -213,23 +213,13 @@ class User extends Component {
         }
         return (
             <div class="container">
-                <button onClick={() => firebase.auth().signOut().then(this.props.history.push("/"))}>Sign out</button>
+                <Header/>
                 <div class="panel panel-default">
+                    <button onClick={() => firebase.auth().signOut().then(this.props.history.push("/"))}>Sign out</button>
                     <div class="panel-heading">
-                    <h4><Link to="/">Board List</Link></h4>
+                    
                     </div>
                     <div class="panel-body" onClick={this.handleClick.bind(this)}>
-                        {this.state.picture!=null&&<img src={this.state.picture} />}
-                        {this.state.picture==null&&<img src={imgDef}/>}
-                        <input 
-                            class="form-control"
-                            type="file" 
-                            name="user[image]" 
-                            multiple="true"
-                            onChange={this.onImgChange}
-                            style={{display: "none"}}
-                            ref="fileUploader"/>
-                        <br/>
                     </div>
                     <div>
                         User Name: {this.state.userName}
@@ -240,8 +230,7 @@ class User extends Component {
                                 <button type="submit">Change User Name</button>
                             </form>
                         </div>
-                        <div>
-                        <table className="table table-stripe">
+                        <table className="table">
                             <th>Subscripciones</th>
                             <tbody>
                                 <td>{bColonia}</td>
@@ -250,9 +239,7 @@ class User extends Component {
                                 <td>{bUnidad}</td>
                                 <td>{bClan}</td>
                             </tbody>
-                            </table>   
-                        </div>
-                        <h4><Link to="/create">Add Board</Link></h4>
+                        </table>   
                     </div>
                 </div>
             </div>

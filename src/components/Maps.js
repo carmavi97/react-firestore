@@ -1,27 +1,77 @@
 import React, { Component } from 'react';
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
-import { Icon } from "leaflet";
-import "../App.css";
+import {MapContainer, TileLayer, Marker, Popup, useMapEvents, useMapEvent} from 'react-leaflet';
 
-class Maps extends Component {
+const MyMarker = props => {
 
-reder(){
-  const position = [51.505, -0.09]
-  return(
-   
-  <MapContainer center={position} zoom={13} scrollWheelZoom={false}>
-    <TileLayer
-      attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-    />
-    <Marker position={position}>
-      <Popup>
-        A pretty CSS3 popup. <br /> Easily customizable.
-      </Popup>
-    </Marker>
-  </MapContainer>
+    const initMarker = ref => {
+      if (ref) {
+        ref.leafletElement.openPopup()
+      }
+    }
+  
+    return <Marker ref={initMarker} {...props}/>
+  }  
+  class Maps extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+          lat:null,
+          lng:null
+        };
+      }
 
-   )
-   }
-}
+    
+      LocationMarker() {
+        //useMapEvents = useMapEvents.bind(this);
+          const map = useMapEvents({
+              click: () => {
+                  map.locate()
+                },
+                locationfound: (location) => {
+                  console.log('location found:', location.latlng);
+                  ///
+                  this.setState({lat:location.latlng.lat,lng:location.latlng.lng});
+                }
+          })
+        const latlng=this.state
+          if(latlng.lat!=null){
+            console.log('entra:'+ latlng.lat)
+            return (
+              <Marker position={latlng.lat,latlng.lng}>
+                    <Popup>
+                      Click
+                    </Popup>
+                </Marker>
+            )
+          }else{
+            return(<Marker position={{lat:'37.8937611',lng:'-4.7844279'}}>
+            <Popup>
+              Local del grupo scout mafeking 500
+            </Popup>
+          </Marker>)
+          }
+      
+        
+        
+      }
+
+      render() {
+        this.LocationMarker=this.LocationMarker.bind(this)
+        return (
+          <div>
+            <MapContainer center={{lat:'37.8937611',lng:'-4.7844279'}} zoom='20' >
+              <TileLayer
+                  url='https://{s}.tile.osm.org/{z}/{x}/{y}.png'
+              />
+              <this.LocationMarker />
+              
+            </MapContainer>
+          </div>
+        )
+      }
+    }
+    
+
+
+
 export default Maps;

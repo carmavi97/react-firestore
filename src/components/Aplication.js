@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import firebase from '../Firebase';
 import { app, firestore } from 'firebase';
-
+import Header from './Header';
+import Maps from './Maps';
 class App extends Component {
   constructor(props) {
     super(props);
@@ -192,65 +193,87 @@ class App extends Component {
   render() {
     let add=<br/>;
     if(this.state.admin){
-      add=<Link to="/create">Add Board</Link>
-      console.log(this.state.admin)
+      add=<div class="create">
+            <Link to="/create">Add Board</Link>
+          </div>
     }
     
 
     return (
       <div className="container">
-        <p>Signed as {this.state.user.displayName}</p>
-        <Link to='/map'>mapa</Link>
-        <h4><Link to="/user">My Profile</Link></h4>
+        
+        
+        
+        <h4></h4>
         <div className="panel panel-default">
           <div className="panel-heading">
+          <Header/>
+          <Maps/>
             <h3 className="panel-title">
               BOARD LIST
             </h3>
           </div>
           <div className="panel-body">
             <div id="filter">
-              <p>Filter Sections</p>
-            <button variant="contained" className="btn btn-success" onClick={this.showColonia.bind()}>
-              Colonia
-            </button>
-            <button variant="contained" className="btn btn-success" onClick={this.showManada.bind()}>
-              Manada
-            </button>
-            <button variant="contained" className="btn btn-success" onClick={this.showTropa.bind()}>
-              Tropa
-            </button>
-            <button variant="contained" className="btn btn-success" onClick={this.showUnidad.bind()}>
-              Unidad
-            </button>
-            <button variant="contained" className="btn btn-success" onClick={this.showClan.bind()}>
-              Clan
-            </button>
-            <button variant="contained" className="btn btn-success" onClick={this.showAll.bind()}>
-              All
-            </button>
+            <table className="table">
+              <th>Filter Sections</th>
+              <tbody>
+                  <td>
+                    <button variant="contained" className="btn btn-success" onClick={this.showColonia.bind()}>
+                    Colonia
+                    </button>
+                  </td>
+                  <td>
+                    <button variant="contained" className="btn btn-success" onClick={this.showManada.bind()}>
+                      Manada
+                    </button>
+                  </td>
+                  <td>
+                    <button variant="contained" className="btn btn-success" onClick={this.showTropa.bind()}>
+                      Tropa
+                    </button>
+                  </td>
+                  <td>
+                    <button variant="contained" className="btn btn-success" onClick={this.showUnidad.bind()}>
+                      Unidad
+                    </button>
+                  </td>
+                  <td>
+                    <button variant="contained" className="btn btn-success" onClick={this.showClan.bind()}>
+                      Clan
+                    </button>
+                  </td>
+                  <td>
+                    <button variant="contained" className="btn btn-success" onClick={this.showAll.bind()}>
+                      All
+                    </button>
+                  </td>
+                </tbody>
+            </table>  
             </div>
             <h4>{add}</h4>
-            <table className="table table-stripe">
-              <thead>
-                <tr>
-                  <th>Title</th>
-                  <th>Description</th>
-                  <th>Author</th>
-                  <th>Posted</th>
-                </tr>
-              </thead>
-              <tbody>
-                {this.state.boards.map(board =>
+            <div class="content-table">
+              <table className="table table-stripe">
+                <thead>
                   <tr>
-                    <td><Link to={`/show/${board.key}`}>{board.title}</Link></td>
-                    <td>{board.description}</td>
-                    <td>{board.author}</td>
-                    <td>{board.date_time}</td>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Author</th>
+                    <th>Posted</th>
                   </tr>
-                )}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {this.state.boards.map(board =>
+                    <tr>
+                      <td><Link to={`/show/${board.key}`}>{board.title}</Link></td>
+                      <td>{board.description}</td>
+                      <td>{board.author}</td>
+                      <td>{board.date_time}</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

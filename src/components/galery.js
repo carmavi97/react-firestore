@@ -34,7 +34,7 @@ class Galery extends Component{
         const imagenes=this.state.images;
     
         return (
-            <table class="table table-stripe">
+            <table class="table">
               <thead>
                 <tr>
                   <th>Images</th>

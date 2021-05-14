@@ -7,7 +7,51 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+body{
+  background-color: purple;
+}
+
+.create a{
+  color:white
+}
+
+.header a{
+  color: white;
+}
+
+a:hover{
+  text-decoration: none;
+}
+
+table.table-stripe{
+  background-color: white;
+}
+
+.navbar {
+  width: 100%;
+  overflow: auto;
+}
+.nav-item {
+  float: left;
+  padding: 12px;
+  text-decoration: none;
+  font-size: 17px;
+  width: 100%; 
+  text-align: center; 
+}
+
+.nav-item:hover {
+  background-color: #a900a9;
+}
+
+.leaflet-container {
+  width: 30vw;
+  height: 50vh;
+}
+
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+

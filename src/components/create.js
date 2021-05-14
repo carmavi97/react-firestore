@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { AuthProvider } from './Auth';
 import { app } from 'firebase';
 import emailjs from 'emailjs-com';
-
+import Header from './Header';
 
 
 class Create extends Component {
@@ -23,7 +23,7 @@ class Create extends Component {
         description: '',
         author: user.displayName,
         img:'',
-        comments:{},
+        loaded:false,
         images:[]
       };
     }else{
@@ -31,8 +31,8 @@ class Create extends Component {
         title: '',
         description: '',
         author: user.email,
+        loaded:false,
         img:'',
-        comments:{},
         images:[]
       };
     }
@@ -43,10 +43,11 @@ class Create extends Component {
  * Actualiza el estado del componente con el contenido del text area
  */
   onChange = (e) => {
-    const state = this.state
-    state[e.target.name] = e.target.value;
-    this.setState(state);
-
+    if(e!=null){
+      const state = this.state
+      state[e.target.name] = e.target.value;
+      this.setState(state);
+    }
   }
 
   /**
@@ -66,10 +67,10 @@ class Create extends Component {
       imageToBase64(reader.result) // you can also to use url
     .then(
       imgs.push(reader.result)
-      //this.setState({ img:[reader.result]}) 
+      
     ).then((done)=>{
       this.setState({
-        images:imgs
+        images:imgs,
       })
     })
     .catch(
@@ -78,6 +79,9 @@ class Create extends Component {
         }
     )
     }.bind(this);
+    this.setState({
+      loaded:true
+    })
   }
 /**
  * 
@@ -88,13 +92,12 @@ class Create extends Component {
    onSubmit = (e) => {
     e.preventDefault();
     this.handleSubmit();
-    const { title, description, author,img ,comments} = this.state;
+    const { title, description, author,img} = this.state;
     const images=this.state.images;
     this.ref.add({
       title,
       description,
       author,
-      comments,
       date_time: new Date().toLocaleString()
       
     }).then((docRef) => {
@@ -104,6 +107,7 @@ class Create extends Component {
             const boardId = snapshot.docs[0].id;
             images.forEach((image)=>{
               firebase.firestore().collection('boards').doc(boardId).collection('images').add({image});
+              this.setState({loaded:true})
             })
           
         }else{
@@ -115,7 +119,6 @@ class Create extends Component {
           description: '',
           author: '',
           img:'',
-          comments:{}
         });
         this.props.history.push("/")
       });
@@ -176,12 +179,13 @@ class Create extends Component {
     }
 
   render() {
-    const { title, description, author, images, comments } = this.state;
+    const { title, description, author, images} = this.state;
     var user=firebase.auth().currentUser;
     const preAuthor=user.displayName;
     
     return (
       <div class="container">
+        <Header/>
         <div class="panel panel-default">
           <div class="panel-heading">
             <h3 class="panel-title">
@@ -214,7 +218,7 @@ class Create extends Component {
                     onChange={this.onImgChange}/>
 
               </div>
-              <table class="table table-stripe">
+              <table class="table">
               <thead>
                 <tr>
                   <th>Images</th>

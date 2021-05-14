@@ -73,7 +73,7 @@ class Comment extends Component {
     const comments=this.state.comments;
 
     return (
-        <div class="container">
+        <div>
           <div class="panel-coments">
               <form onSubmit={this.onSubmit}>
               <div class="form-group">

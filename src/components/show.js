@@ -3,7 +3,7 @@ import firebase from '../Firebase';
 import { Link } from 'react-router-dom';
 import Comment from '../components/Comment'
 import Galery from './Galery';
-import Maps from './Maps';
+
 class Show extends Component {
 
   constructor(props) {
@@ -63,49 +63,7 @@ class Show extends Component {
       console.error("Error removing document: ", error);
     });
   }
-/*
-  follow= (e)=>{
-    const userID='';
-    const author=this.state.board.author;
-    const currentUser=firebase.auth().currentUser;
-    if(author=='Colonia'){
-      firebase.firestore().collection('users').where("userName","==",currentUser).then((snapshot)=>{
-        snapshot.forEach(doc=>{
-          userID=doc.id;
-          firebase.firestore().collection('users').doc(userID).set({Colonia: true})
-        })
-      })
-    }if(this.state.board.author=='Manada'){
-      firebase.firestore().collection('users').where("userName","==",firebase.auth().currentUser).then((snapshot)=>{
-        snapshot.forEach(doc=>{
-          userID=doc.id;
-          firebase.firestore().collection('users').doc(userID).set({Manada: true})
-        })
-      })
-    }if(this.state.board.author=='Tropa'){
-      firebase.firestore().collection('users').where("userName","==",firebase.auth().currentUser).then((snapshot)=>{
-        snapshot.forEach(doc=>{
-          userID=doc.id;
-          firebase.firestore().collection('users').doc(userID).set({Tropa: true})
-        })
-      })
-    }if(this.state.board.author=='Unidad'){
-      firebase.firestore().collection('users').where("userName","==",firebase.auth().currentUser).then((snapshot)=>{
-        snapshot.forEach(doc=>{
-          userID=doc.id;
-          firebase.firestore().collection('users').doc(userID).set({Unidad: true})
-        })
-      })
-    }if(this.state.board.author=='Clan'){
-      firebase.firestore().collection('users').where("userName","==",firebase.auth().currentUser).then((snapshot)=>{
-        snapshot.forEach(doc=>{
-          userID=doc.id;
-          firebase.firestore().collection('users').doc(userID).set({Clan: true})
-        })
-      })
-    }
-  }
-*/
+
 /**
  * 
  * @returns El Html que se carga en pantalla
@@ -121,6 +79,7 @@ class Show extends Component {
 
     return (
       <div class="container">
+        
         <div class="panel panel-default">
           <div class="panel-heading">
           <h4><Link to="/">Board List</Link></h4>
@@ -139,9 +98,12 @@ class Show extends Component {
             <div id="mapas">
 
             </div>
-            {bDelete}
-            
             {bEdit}
+            <br/>
+            <br/>
+            {bDelete}
+            <br/>
+            <br/>
             <div class="panel-coments">
               <Comment dataFromParent = {this.props.match.params.id}/>
             </div>

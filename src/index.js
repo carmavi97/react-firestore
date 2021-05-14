@@ -8,6 +8,7 @@ import * as serviceWorker from './serviceWorker';
 import Edit from './components/edit';
 import Create from './components/create';
 import Show from './components/show';
+import Maps from './components/Maps';
 
 ReactDOM.render(
   <Router>
