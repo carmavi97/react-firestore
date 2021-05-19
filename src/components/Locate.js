@@ -1,17 +1,9 @@
+
 import React, { Component } from 'react';
 import {MapContainer, TileLayer, Marker, Popup, useMapEvents, useMapEvent} from 'react-leaflet';
 
-const MyMarker = props => {
 
-    const initMarker = ref => {
-      if (ref) {
-        ref.leafletElement.openPopup()
-      }
-    }
-  
-    return <Marker ref={initMarker} {...props}/>
-  }  
-  class Maps extends Component {
+  class Locate extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -27,14 +19,9 @@ const MyMarker = props => {
       LocationMarker() {
         //useMapEvents = useMapEvents.bind(this);
           const map = useMapEvents({
-              click: () => {
-                  map.locate()
-                  
-                },
-                locationfound: (location) => {
-                  console.log('location found:', location.latlng);
-                  this.setState({latlng:{lat:location.latlng.lat,lng:location.latlng.lng},selected:true});
-                  map.flyTo(location.latlng, map.getZoom())
+              click: (location) => {
+                this.setState({latlng:{lat:location.latlng.lat,lng:location.latlng.lng},selected:true});
+                map.flyTo(location.latlng, map.getZoom())
                 }
           })
           return(null)
@@ -51,10 +38,11 @@ const MyMarker = props => {
           let lng=this.state.latlng.lng
           position=<Marker position={{lat,lng}}>
           <Popup>
-            Usted esta aqui
+            Posicion guardada
           </Popup>
         </Marker>;
         }
+        
 
         return (
           <div>
@@ -74,4 +62,4 @@ const MyMarker = props => {
 
 
 
-export default Maps;
+export default Locate;

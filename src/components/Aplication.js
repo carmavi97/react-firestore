@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import firebase from '../Firebase';
 import { app, firestore } from 'firebase';
 import Header from './Header';
-import Maps from './Maps';
+import Locate from './Locate';
 class App extends Component {
   constructor(props) {
     super(props);
@@ -208,7 +208,7 @@ class App extends Component {
         <div className="panel panel-default">
           <div className="panel-heading">
           <Header/>
-          <Maps/>
+          <Locate/>
             <h3 className="panel-title">
               BOARD LIST
             </h3>

@@ -3,6 +3,7 @@ import firebase from '../Firebase';
 import { Link } from 'react-router-dom';
 import Comment from '../components/Comment'
 import Galery from './Galery';
+import Maps from './Maps';
 
 class Show extends Component {
 
@@ -96,8 +97,9 @@ class Show extends Component {
             </dl>
             <Galery dataFromParent = {this.props.match.params.id}/>
             <div id="mapas">
-
+            <Maps/>
             </div>
+            <br/>
             {bEdit}
             <br/>
             <br/>

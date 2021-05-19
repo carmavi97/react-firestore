@@ -166,7 +166,7 @@ class Edit extends Component {
               </tbody>
             </table> 
               <button class="btn btn-danger" onClick={this.imgDelete}>Delete Image</button>
-              <br/>
+              <br/> 
               <br/>
               <button type="submit" class="btn btn-success" >Submit</button>
             </form>

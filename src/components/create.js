@@ -6,7 +6,7 @@ import { AuthProvider } from './Auth';
 import { app } from 'firebase';
 import emailjs from 'emailjs-com';
 import Header from './Header';
-
+import Locate from './Locate'
 
 class Create extends Component {
 
@@ -217,6 +217,9 @@ class Create extends Component {
                     multiple="true"
                     onChange={this.onImgChange}/>
 
+              </div>
+              <div>
+                <Locate/>
               </div>
               <table class="table">
               <thead>
