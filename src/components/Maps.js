@@ -1,16 +1,8 @@
 import React, { Component } from 'react';
 import {MapContainer, TileLayer, Marker, Popup, useMapEvents, useMapEvent} from 'react-leaflet';
+import firebase from '../Firebase';
 
-const MyMarker = props => {
 
-    const initMarker = ref => {
-      if (ref) {
-        ref.leafletElement.openPopup()
-      }
-    }
-  
-    return <Marker ref={initMarker} {...props}/>
-  }  
   class Maps extends Component {
     constructor(props) {
         super(props);
@@ -19,10 +11,32 @@ const MyMarker = props => {
             lat:null,
             lng:null
           },
-          selected:false
+          selected:false,
+          loaded:false,
+          coordinates:{
+            lat:'1',
+            lng:'1'
+          }
         };
+        this.componentDidMount=this.componentDidMount.bind(this)
       }
 
+      componentDidMount() {
+        const coordinates={  
+          lat:'1',
+          lng:'1'
+        }
+        const ref = firebase.firestore().collection('boards').doc('ylvcs5bkH7IY4ymN85TF').get().then(function (snapshot){
+            coordinates.lat=snapshot.data().latlng.lat;
+            coordinates.lng=snapshot.data().latlng.lng;
+        }).then((done)=>{
+            this.setState({
+                isLoading: false,
+                coordinates:coordinates,
+                loaded:true
+            })
+        });
+      }
     
       LocationMarker() {
         //useMapEvents = useMapEvents.bind(this);
@@ -46,6 +60,13 @@ const MyMarker = props => {
       render() {
         this.LocationMarker=this.LocationMarker.bind(this)
         let position=<Marker position={{lat:'1',lng:'1'}}></Marker>;
+        let coorLat='1'
+        let coorLng='1'
+        if(this.state.loaded){
+          coorLat=this.state.coordinates.lat;
+          coorLng=this.state.coordinates.lng;
+        }
+
         if(this.state.selected){
           let lat=this.state.latlng.lat;
           let lng=this.state.latlng.lng
@@ -55,7 +76,7 @@ const MyMarker = props => {
           </Popup>
         </Marker>;
         }
-
+        
         return (
           <div>
             Pulse en el mapa para ver su localización
@@ -65,6 +86,11 @@ const MyMarker = props => {
               />
               <this.LocationMarker />
               {position}
+              <Marker position={{lat:coorLat,lng:coorLng}}>
+                <Popup>
+                  Actividad
+                </Popup>
+              </Marker>
             </MapContainer>
           </div>
         )

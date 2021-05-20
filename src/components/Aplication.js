@@ -208,7 +208,6 @@ class App extends Component {
         <div className="panel panel-default">
           <div className="panel-heading">
           <Header/>
-          <Locate/>
             <h3 className="panel-title">
               BOARD LIST
             </h3>

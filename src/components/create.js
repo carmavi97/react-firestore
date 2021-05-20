@@ -1,4 +1,5 @@
 import React, { useContext, Component } from 'react';
+import {MapContainer, TileLayer, Marker, Popup, useMapEvents, useMapEvent} from 'react-leaflet';
 import ReactDOM from 'react-dom';
 import firebase from '../Firebase';
 import { Link } from 'react-router-dom';
@@ -22,9 +23,9 @@ class Create extends Component {
         title: '',
         description: '',
         author: user.displayName,
-        img:'',
         loaded:false,
-        images:[]
+        images:[],
+        map:false
       };
     }else{
       this.state = {
@@ -32,10 +33,19 @@ class Create extends Component {
         description: '',
         author: user.email,
         loaded:false,
-        img:'',
-        images:[]
+        images:[],
+        map:false,
+        latlng:{
+          lat:null,
+          lng:null
+        },
+        selected:false
       };
     }
+  }
+
+  componentDidMount(){
+    this.showMap=this.showMap.bind(this)
   }
 /**
  * 
@@ -92,40 +102,76 @@ class Create extends Component {
    onSubmit = (e) => {
     e.preventDefault();
     this.handleSubmit();
-    const { title, description, author,img} = this.state;
+    const { title, description, author,selected,latlng} = this.state;
     const images=this.state.images;
-    this.ref.add({
-      title,
-      description,
-      author,
-      date_time: new Date().toLocaleString()
-      
-    }).then((docRef) => {
-      const ref_2 = firebase.firestore().collection('boards').orderBy('date_time').limitToLast(1).get().then(function (snapshot){
+    if(selected){
+      this.ref.add({
+        title,
+        description,
+        author,
+        date_time: new Date().toLocaleString(),
+        selected,
+        latlng
         
-        if (snapshot.docs[0].exists) {
-            const boardId = snapshot.docs[0].id;
-            images.forEach((image)=>{
-              firebase.firestore().collection('boards').doc(boardId).collection('images').add({image});
-              this.setState({loaded:true})
-            })
+      }).then((docRef) => {
+        const ref_2 = firebase.firestore().collection('boards').orderBy('date_time').limitToLast(1).get().then(function (snapshot){
           
-        }else{
-          console.log("No such document!");
-        }
-      }).then((done) =>{
-        this.setState({
-          title: '',
-          description: '',
-          author: '',
-          img:'',
+          if (snapshot.docs[0].exists) {
+              const boardId = snapshot.docs[0].id;
+              images.forEach((image)=>{
+                firebase.firestore().collection('boards').doc(boardId).collection('images').add({image});
+                this.setState({loaded:true})
+              })
+            
+          }else{
+            console.log("No such document!");
+          }
+        }).then((done) =>{
+          this.setState({
+            title: '',
+            description: '',
+            author: '',
+          });
+          this.props.history.push("/")
         });
-        this.props.history.push("/")
+      })
+      .catch((error) => {
+        console.error("Error adding document: ", error);
       });
-    })
-    .catch((error) => {
-      console.error("Error adding document: ", error);
-    });
+    }else{
+      this.ref.add({
+        title,
+        description,
+        author,
+        date_time: new Date().toLocaleString()
+        
+      }).then((docRef) => {
+        const ref_2 = firebase.firestore().collection('boards').orderBy('date_time').limitToLast(1).get().then(function (snapshot){
+          
+          if (snapshot.docs[0].exists) {
+              const boardId = snapshot.docs[0].id;
+              images.forEach((image)=>{
+                firebase.firestore().collection('boards').doc(boardId).collection('images').add({image});
+                this.setState({loaded:true})
+              })
+            
+          }else{
+            console.log("No such document!");
+          }
+        }).then((done) =>{
+          this.setState({
+            title: '',
+            description: '',
+            author: '',
+          });
+          this.props.history.push("/")
+        });
+      })
+      .catch((error) => {
+        console.error("Error adding document: ", error);
+      });
+    }
+    
   }
 /**
  * Este metodo se ejecuta al crea un post nuevo, buscara en cada usuario regristrado si esta subscrito, lo que se refleja
@@ -178,10 +224,51 @@ class Create extends Component {
       .catch(err => console.error('Oh well, you failed. Here some thoughts on the error that occured:', err))
     }
 
+    LocationMarker() {
+      //useMapEvents = useMapEvents.bind(this);
+        const map = useMapEvents({
+            click: (location) => {
+              this.setState({latlng:{lat:location.latlng.lat,lng:location.latlng.lng},selected:true});
+              map.flyTo(location.latlng, map.getZoom())
+              }
+        })
+        return(null)
+    
+    }
+
+    showMap(){
+      this.setState({map:true});
+      console.log('cambio')
+    }
+
   render() {
     const { title, description, author, images} = this.state;
     var user=firebase.auth().currentUser;
     const preAuthor=user.displayName;
+    this.LocationMarker=this.LocationMarker.bind(this)
+    this.showMap=this.showMap.bind(this)
+    let position=<Marker position={{lat:'1',lng:'1'}}></Marker>;
+
+    if(this.state.selected){
+      let lat=this.state.latlng.lat;
+      let lng=this.state.latlng.lng
+      position=<Marker position={{lat,lng}}>
+      <Popup>
+        Posicion guardada
+      </Popup>
+    </Marker>;
+    }
+
+    let coordinades=<br/>;
+    if(this.state.map){
+      coordinades=<MapContainer center={{lat:'37.8937611',lng:'-4.7844279'}} zoom='20' >
+      <TileLayer
+          url='https://{s}.tile.osm.org/{z}/{x}/{y}.png'
+      />
+      <this.LocationMarker />
+      {position}
+    </MapContainer>
+    }
     
     return (
       <div class="container">
@@ -218,9 +305,7 @@ class Create extends Component {
                     onChange={this.onImgChange}/>
 
               </div>
-              <div>
-                <Locate/>
-              </div>
+              
               <table class="table">
               <thead>
                 <tr>
@@ -236,9 +321,16 @@ class Create extends Component {
               </tbody>
             </table> 
               <br/>
+              {coordinades}
+              <br/>
               <button type="submit" class="btn btn-success">Submit</button>
             </form>
-            
+            <br/>
+            <div>
+                <button variant="contained" className="btn btn-primary" onClick={this.showMap.bind()}>
+                    Add location
+                </button>
+              </div>
           </div>
         </div>
       </div>

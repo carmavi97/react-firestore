@@ -15,7 +15,8 @@ class Show extends Component {
       key: '',
       newComment:'',
       user:firebase.auth().currentUser,
-      admin:false
+      admin:false,
+      seleted:false
     };
   }
 /**
@@ -73,11 +74,16 @@ class Show extends Component {
   render() {
     let bEdit=<br/>;
     let bDelete=<br/>;
+    let map=<br/>
     if(this.state.admin){
       bEdit=<Link to={`/edit/${this.state.key}`} class="btn btn-success">Edit</Link>
       bDelete=<button onClick={this.delete.bind(this, this.state.key)} class="btn btn-danger">Delete</button>
     }
 
+    if(this.state.board.selected){
+      map=<Maps dataFromParent = {this.props.match.params.id}/>
+      console.log('entra')
+    }
     return (
       <div class="container">
         
@@ -97,7 +103,7 @@ class Show extends Component {
             </dl>
             <Galery dataFromParent = {this.props.match.params.id}/>
             <div id="mapas">
-            <Maps/>
+              {map}
             </div>
             <br/>
             {bEdit}

@@ -26,8 +26,6 @@ import {MapContainer, TileLayer, Marker, Popup, useMapEvents, useMapEvent} from 
           })
           return(null)
       
-        
-        
       }
 
       render() {
@@ -42,6 +40,7 @@ import {MapContainer, TileLayer, Marker, Popup, useMapEvents, useMapEvent} from 
           </Popup>
         </Marker>;
         }
+        
         
 
         return (
