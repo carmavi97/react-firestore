@@ -1,13 +1,8 @@
 import React, { useContext, Component } from 'react';
 import {MapContainer, TileLayer, Marker, Popup, useMapEvents, useMapEvent} from 'react-leaflet';
-import ReactDOM from 'react-dom';
 import firebase from '../Firebase';
-import { Link } from 'react-router-dom';
-import { AuthProvider } from './Auth';
-import { app } from 'firebase';
 import emailjs from 'emailjs-com';
 import Header from './Header';
-import Locate from './Locate'
 
 class Create extends Component {
 
@@ -280,7 +275,6 @@ class Create extends Component {
             </h3>
           </div>
           <div class="panel-body">
-            <h4><Link to="/" class="btn btn-primary">Post List</Link></h4>
             <form onSubmit={this.onSubmit}>
               <div class="form-group">
                 <label for="title">Title:</label>

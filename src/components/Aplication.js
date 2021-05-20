@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import firebase from '../Firebase';
 import { app, firestore } from 'firebase';
 import Header from './Header';
-import Locate from './Locate';
 class App extends Component {
   constructor(props) {
     super(props);
