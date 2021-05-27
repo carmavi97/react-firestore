@@ -23,6 +23,18 @@ a:hover{
   text-decoration: none;
 }
 
+.auth{
+  position: fixed;
+  top: 30%;
+  bottom: 45%;
+  left: 45%;
+  right: 45%;
+}
+
+.auth form{
+  float:right
+}
+
 table.table-stripe{
   background-color: white;
 }

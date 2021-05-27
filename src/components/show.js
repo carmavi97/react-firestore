@@ -86,10 +86,18 @@ class Show extends Component {
     }
     return (
       <div class="container">
-        
+        <div class="header">
+          <h1><a href="https://www.facebook.com/gsmafeking500/">Asociacion scout de Córdoba </a></h1>
+          <nav class="navbar navbar-expand-sm">
+          <ul class="navbar-nav">
+            <li class="nav-item active">
+              <h3><Link to="/">Board List</Link></h3>
+            </li>
+          </ul>
+        </nav>
+        </div>
         <div class="panel panel-default">
           <div class="panel-heading">
-          <h4><Link to="/">Board List</Link></h4>
             <h3 class="panel-title">
               {this.state.board.title}
             </h3>

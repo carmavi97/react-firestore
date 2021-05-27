@@ -26,7 +26,7 @@ import firebase from '../Firebase';
           lat:'1',
           lng:'1'
         }
-        const ref = firebase.firestore().collection('boards').doc('ylvcs5bkH7IY4ymN85TF').get().then(function (snapshot){
+        const ref = firebase.firestore().collection('boards').doc(this.props.dataFromParent).get().then( (snapshot)=>{
             coordinates.lat=snapshot.data().latlng.lat;
             coordinates.lng=snapshot.data().latlng.lng;
         }).then((done)=>{
@@ -39,7 +39,6 @@ import firebase from '../Firebase';
       }
     
       LocationMarker() {
-        //useMapEvents = useMapEvents.bind(this);
           const map = useMapEvents({
               click: () => {
                   map.locate()

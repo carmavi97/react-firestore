@@ -77,6 +77,7 @@ class Create extends Component {
       this.setState({
         images:imgs,
       })
+      console.log('entra')
     })
     .catch(
         (error) => {
@@ -115,7 +116,6 @@ class Create extends Component {
               const boardId = snapshot.docs[0].id;
               images.forEach((image)=>{
                 firebase.firestore().collection('boards').doc(boardId).collection('images').add({image});
-                this.setState({loaded:true})
               })
             
           }else{
@@ -147,7 +147,6 @@ class Create extends Component {
               const boardId = snapshot.docs[0].id;
               images.forEach((image)=>{
                 firebase.firestore().collection('boards').doc(boardId).collection('images').add({image});
-                this.setState({loaded:true})
               })
             
           }else{
