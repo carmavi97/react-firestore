@@ -77,7 +77,6 @@ class Create extends Component {
       this.setState({
         images:imgs,
       })
-      console.log('entra')
     })
     .catch(
         (error) => {
@@ -232,7 +231,6 @@ class Create extends Component {
 
     showMap(){
       this.setState({map:true});
-      console.log('cambio')
     }
 
   render() {

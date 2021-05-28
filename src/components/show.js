@@ -82,7 +82,6 @@ class Show extends Component {
 
     if(this.state.board.selected){
       map=<Maps dataFromParent = {this.props.match.params.id}/>
-      console.log('entra')
     }
     return (
       <div class="container">

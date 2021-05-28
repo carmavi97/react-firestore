@@ -45,7 +45,6 @@ import firebase from '../Firebase';
                   
                 },
                 locationfound: (location) => {
-                  console.log('location found:', location.latlng);
                   this.setState({latlng:{lat:location.latlng.lat,lng:location.latlng.lng},selected:true});
                   map.flyTo(location.latlng, map.getZoom())
                 }
